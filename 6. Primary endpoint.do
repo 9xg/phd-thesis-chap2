@@ -5,15 +5,15 @@ log using "6", replace
 * CALCULATE VIF and WEIGHTED AVERAGE FOLLOW-UP
 ********************************************************************************
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CODED_SEARCH_CRF.dta", ///
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CODED_SEARCH_CRF.dta", ///
 	clear
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("Power") modify
-***	
-	
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("Power") modify
+***
+
 * Compare Baseline and Endpoint dates with Beth's spreadsheet
-merge 1:1 Site using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\FUspreadsheet.dta"
+merge 1:1 Site using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/FUspreadsheet.dta"
 // ok, 2 sites not matched because still missing from CODED SEARCH CRF
 
 drop _merge
@@ -37,7 +37,7 @@ gen FUmonths = round(FUmths, 1)
 br if FUmonths != Numberofmonths
 // no differences in FU
 
-merge 1:1 Site using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\SiteArm.dta"
+merge 1:1 Site using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/SiteArm.dta"
 
 keep Site FUdays RandGroup StudyArm Size
 
@@ -111,13 +111,13 @@ replace Stratum = 6 if Stratum == .
 label define Stratum 6 "PLR", modify
 
 ***
-export excel using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("Power") sheetmodify firstrow(variables) keepcellfmt
+export excel using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("Power") sheetmodify firstrow(variables) keepcellfmt
 ***
 
 ********************************************************************************
 * COUNTING/PREPARE DATASET FOR PRIMARY ENDPOINT ANALYSIS
 ********************************************************************************
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\BEST3_PATIENT_clean.dta", ///
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/BEST3_PATIENT_clean.dta", ///
 	clear
 
 * Baseline date
@@ -147,7 +147,7 @@ tab STUDY_ARM ResEndScheduled, m
 keep PATIENT_ID Site STUDY_ARM BaseDate ResEndScheduled
 
 * Add CLR/PLR
-merge m:1 Site using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\SiteArm.dta"
+merge m:1 Site using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/SiteArm.dta"
 
 tab StudyArm STUDY_ARM
 drop _merge Size StudyArm
@@ -164,7 +164,7 @@ drop STUDY_ARM
 label var StudyArm "Usual/Intervention"
 
 * Add Cytosponge result
-merge m:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF_final.dta"
+merge m:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF_final.dta"
 drop CRF_ID-exclude
 drop _merge
 
@@ -183,7 +183,7 @@ label values PatientType typelab
 tab PatientType, m
 
 *** MERGE WITH CODED SEARCH CRF
-merge m:1 Site using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CODED_SEARCH_CRF.dta"
+merge m:1 Site using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CODED_SEARCH_CRF.dta"
 drop _merge
 
 drop CRF_ID-LAST_UPDATED_BY FUdays-_merge
@@ -193,7 +193,7 @@ label var EndpointDate "CODED_SEARCH_CRF"
 rename PATIENT_ID PatientID
 
 *** MERGE WITH BE/CANCER DIAGNOSES
-merge m:m PatientID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PrimaryBE.dta"
+merge m:m PatientID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PrimaryBE.dta"
 
 replace PrimaryEndpt = 0 if PrimaryEndpt == .
 tab PrimaryEndpt StudyArm, m
@@ -201,7 +201,7 @@ tab PrimaryEndpt StudyArm, m
 drop _merge
 
 *** MERGE WITH ENDOSCOPY DATES
-merge m:1 PatientID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\EndoscopyDate.dta"
+merge m:1 PatientID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/EndoscopyDate.dta"
 drop _merge
 
 *** CHECK ENDOSCOPY DATES WITH RESEARCH ENDOSCOPY DATES
@@ -230,7 +230,7 @@ replace PrimaryEndpt = 0 if DiagDetail >= 5 & DiagDetail < .
 **********************************************************************
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("PrimaryEndpoint") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("PrimaryEndpoint") modify
 ***
 
 tab Site, m
@@ -260,18 +260,18 @@ tab RandGroup if StudyArm == 1 & PrimaryEndpt == 1 & EndoscopyDate == .
 // probably negative Cytosponges or non-responders
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("Diagnoses") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("Diagnoses") modify
 ***
 
 tab PatientType StudyArm if PrimaryEndpt == 1
 tab DiagDetail PatientType if PrimaryEndpt == 1 | DiagDetail == 0 ///
 	| (DiagDetail >= 5 & DiagDetail < .), m matcell(A)
-// IMPORTANT: if using only BEs in primary endpoint analysis, the line above 
+// IMPORTANT: if using only BEs in primary endpoint analysis, the line above
 // should be uncommented
 putexcel B3 = matrix(A)
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("PrimaryEndpoint") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("PrimaryEndpoint") modify
 ***
 
 *** DEFINE END DATES OF FU
@@ -489,7 +489,7 @@ tab Stratum RandGroup, m
 *** save final dataset before analysis (for Marcel)
 drop RepeatTest CytoResult MacroCytoResult EndpointDate EndoscopyDate ///
 	ResEndDate FUmonths FUyears-avgBErate
-save "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PrimaryEndppoint_Marcel", replace
+save "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PrimaryEndppoint_Marcel", replace
 */
 
 *** PREPARE DATASET

@@ -1,7 +1,7 @@
 version 15
 log using "4", replace
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\ENDOSCOPY_PROCEDURE_CRF.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/ENDOSCOPY_PROCEDURE_CRF.dta", clear
 set more off
 
 ********************************************************************************
@@ -61,14 +61,14 @@ tab CYTOSPONGE_RESULT_NEG, m
 ********************************************************************************
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("ResearchEndoscopies") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("ResearchEndoscopies") modify
 ***
 
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF_final.dta"
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF_final.dta"
 drop _merge
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PatientArm.dta"
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PatientArm.dta"
 drop _merge
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\BEST3_PATIENT_clean.dta", gen(merge)
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/BEST3_PATIENT_clean.dta", gen(merge)
 drop merge
 
 tab CytoResult, m
@@ -101,7 +101,7 @@ br if PATIENT_ID == "B3GBCP0074" | ///
 	PATIENT_ID == "B3GBPR0007"
 count if CLINICAL_LETTER_LOGGED_DATE != ""
 */
-	
+
 count if EndoscopyDate != . & CytoResult == . & STUDY_ARM == "I"
 // 3 non-responders had research endoscopy
 putexcel B19 = (r(N))
@@ -114,7 +114,7 @@ putexcel C6 = matrix(A[3,1])
 * VS USUAL CARE RESEARCH ENDOSCOPY ATTENDANCE
 
 ***
-merge 1:m PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CYTOSPONGE_PROCEDURE_CRF_clean.dta"
+merge 1:m PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CYTOSPONGE_PROCEDURE_CRF_clean.dta"
 ***
 
 duplicates drop PATIENT_ID, force
@@ -148,7 +148,7 @@ putexcel C10 = matrix(B[3,1])
 
 br PATIENT_ID BARRETTS_OESOPHAGUS EndoscopyType if BARRETTS_OESOPHAGUS == "Y"
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("TrialEndoscopies") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("TrialEndoscopies") modify
 ***
 
 putexcel B2 = matrix(A[1,1])
@@ -157,7 +157,7 @@ putexcel B6 = matrix(B[1,1])
 ********************************************************************************
 * ANALYSE ENDOSCOPY PATHOLOGY DATA
 
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\ENDOSCOPY_PATH_CRF.dta", gen(merge)
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/ENDOSCOPY_PATH_CRF.dta", gen(merge)
 // all endoscopy pathology records matched
 drop merge
 
@@ -172,7 +172,7 @@ tab WITH_GASTRIC_METAPLASIA if EndoscopyType == 0
 
 * Check that these are the same ones identified in Endpoint data spreadsheet
 rename PATIENT_ID PatientID
-merge 1:1 PatientID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PrimaryBE.dta", gen(merge)
+merge 1:1 PatientID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PrimaryBE.dta", gen(merge)
 drop merge
 
 tab WITH_INTESTINAL_METAPLASIA PrimaryEndpt if EndoscopyType == 0, m
@@ -197,13 +197,13 @@ tab WITH_GASTRIC_METAPLASIA DiagDetail ///
 // 1 cancer
 
 replace TrialBE = 1 if WITH_GASTRIC_METAPLASIA == "Y" & PrimaryEndpt == 1 & ///
-	EndoscopyType == 0 
+	EndoscopyType == 0
 tab TrialBE
 // 112 BEs diagnosed following a confirmatory endoscopy
 tab DiagDetail if PrimaryEndpt == 1 & EndoscopyType == 0
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("Diagnoses") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("Diagnoses") modify
 ***
 
 * Count IM at the GOJunction for positive patients with no other diagnoses
@@ -237,7 +237,7 @@ replace IM = 1 ///
 	if INTESTINAL_METAPLASIA_PRESENT == "Y" & (CytoResult == 4 | CytoResult == 5) & ///
 	EndoscopyType == 0 & DiagDetail == . & PrimaryEndpt == .
 // 7 changes only
-	
+
 * Count gastric IM (outside gastric cardia) for positive patients
 tab STOMACH_INTESTINAL_METAPLASIA if STUDY_ARM == "I"
 // 22
@@ -267,7 +267,7 @@ tab STOMACH_INTESTINAL_METAPLASIA ///
 // 21
 tab STOMACH_INTESTINAL_METAPLASIA BARRETTS_OESOPHAGUS ///
 	if (CytoResult == 4 | CytoResult == 5) & EndoscopyType == 0
-	
+
 * Dysplasia
 tab DYSPLASIA_PRESENT ///
 	if (CytoResult == 4 | CytoResult == 5) & EndoscopyType == 0
@@ -277,7 +277,7 @@ tab DYSPLASIA_PRESENT_DEGREE
 */
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("ResearchEndoscopies") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("ResearchEndoscopies") modify
 ***
 
 *** RESEARCH ENDOSCOPIES
@@ -300,7 +300,7 @@ putexcel C14 = matrix(A[3,2])
 ********************************************************************************
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("Diagnoses") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("Diagnoses") modify
 ***
 
 * FOR POSITIVE PATIENTS, PRIMARY BEs

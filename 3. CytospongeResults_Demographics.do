@@ -1,11 +1,11 @@
 version 15
 log using "3", replace
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF.dta", clear
 set more off
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("CytospongeResults") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("CytospongeResults") modify
 ***
 
 describe LAST_UPDATED
@@ -47,7 +47,7 @@ gen POSITIVE_4 = 1 if CYTOSPONGE_OPTION_4 == "Y" | CYTOSPONGE_OPTION_4A == "Y" |
 tab POSITIVE_4 EVENT if POSITIVE_4 == 1, matcell(A)
 putexcel C5 = matrix(A[1,1])
 putexcel C13 = matrix(A[1,2])
-                
+
 * POSITIVE WITH CELLULAR ATYPIA
 tab CYTOSPONGE_OPTION_5, m
 tab CYTOSPONGE_OPTION_5A, m
@@ -92,7 +92,7 @@ putexcel C28 = matrix(A[1,1])
 * POSITIVE
 tab POSITIVE_4 if POSITIVE_4 == 1, matcell(A)
 putexcel C29 = matrix(A[1,1])
-                
+
 * POSITIVE WITH CELLULAR ATYPIA
 tab POSITIVE_5 EVENT if POSITIVE_5 == 1, matcell(A)
 putexcel C30 = matrix(A[1,1])
@@ -118,20 +118,20 @@ replace MacroCytoResult = 1 if CytoResult == 3
 replace MacroCytoResult = 2 if CytoResult == 4 | CytoResult == 5
 label define Macrocytolab 0 "Failure/equivocal/low-con neg" ///
                 1 "Negative" ///
-                2 "Positive" 
+                2 "Positive"
 label values MacroCytoResult Macrocytolab
 tab MacroCytoResult, m
 
-save "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF_final.dta", replace
+save "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF_final.dta", replace
 
 ********************************************************************************
 * DEMOGRAPHICS
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\Cytosponge Results Excel.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/Cytosponge Results Excel.dta", clear
 set more off
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
 ***
 
 duplicates report PatientID
@@ -167,7 +167,7 @@ matrix colnames A = "F" "M"
 putexcel A2 = matrix(A), names
 
 rename PatientID PATIENT_ID
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF_final.dta"
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF_final.dta"
 
 tabstat age, s(mean median min max p25 p75) save
 putexcel B20 = matrix(r(StatTotal)')
@@ -182,17 +182,17 @@ putexcel B25 = matrix(r(Stat1)')
 ********************************************************************************
 * CYTOSPONGE ACCEPTABILITY
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\FOLLOWUP_QUESTIONNAIRE.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/FOLLOWUP_QUESTIONNAIRE.dta", clear
 set more off
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("CytospongeQuestionnaire") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("CytospongeQuestionnaire") modify
 ***
 
 duplicates list PATIENT_ID
 
 * Are these all patients who received the Cytosponge?
-merge 1:m PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CYTOSPONGE_PROCEDURE_CRF_clean.dta"
+merge 1:m PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CYTOSPONGE_PROCEDURE_CRF_clean.dta"
 // Yes, they all received the Cytosponge
 sort PATIENT_ID
 duplicates tag PATIENT_ID, gen(dup)
@@ -231,15 +231,15 @@ tabstat SPONGE_PROCEDURE_EXPERIENCE, s(mean min max p50 p25 p75) save
 return list
 matrix A = r(StatTotal)'
 putexcel B2 = matrix(A)
-	
+
 ********************************************************************************
 * MEDICATION
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\MEDICATION_SUBFORM.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/MEDICATION_SUBFORM.dta", clear
 set more off
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
 ***
 
 describe MEDICATION_NAME
@@ -281,10 +281,10 @@ count if STARTED >= 3 & counter == 1
 ********************************************************************************
 * BMI data
 ********************************************************************************
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\BASELINE_CRF.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/BASELINE_CRF.dta", clear
 
 ***
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("CytospongeDemographics") modify
 ***
 
 duplicates tag PATIENT_ID, gen(dup)
@@ -298,14 +298,14 @@ tab dup2
 count if dup == 1 & dup2 == 0
 
 *** Add Cytosponge attendees
-merge m:m PATIENT_ID EVENT using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CYTOSPONGE_PROCEDURE_CRF_clean.dta"
+merge m:m PATIENT_ID EVENT using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CYTOSPONGE_PROCEDURE_CRF_clean.dta"
 ***
 // 7 records not matched
 count if _merge == 1
 // Cytosponge attendees who did not have test
 
 *** Add patient status
-merge m:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\BEST3_PATIENT_clean.dta", gen(merge2)
+merge m:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/BEST3_PATIENT_clean.dta", gen(merge2)
 ***
 
 tab STATUS if _merge == 1
@@ -322,7 +322,7 @@ drop dup dup2 _merge merge2
 
 ****
 * Add Cytosponge results
-merge 1:1 PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\PATH_REPORT_CRF_final.dta"
+merge 1:1 PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/PATH_REPORT_CRF_final.dta"
 ****
 
 * CYTOSPONGE ATTENDEES

@@ -1,11 +1,11 @@
 version 15
 log using "5", replace
 
-use "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\AE_SAE_CRF.dta", clear
+use "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/AE_SAE_CRF.dta", clear
 set more off
 
 ****
-putexcel set "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Results\StatisticalReport.xlsx", sheet("AEs") modify
+putexcel set "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Results/StatisticalReport.xlsx", sheet("AEs") modify
 ****
 
 describe
@@ -22,7 +22,7 @@ br if MEDDRA_CODE == .
 tab MEDDRA_TERM, m
 
 * Are these all patients who received the Cytosponge?
-merge 1:m PATIENT_ID using "G:\CCP\CPTU\BEST3\Section 26 STATISTICS\26.1 Final analysis\Working\CYTOSPONGE_PROCEDURE_CRF_clean.dta"
+merge 1:m PATIENT_ID using "/Users/gehrun01/Desktop/best3-analysis/26.1 Final analysis/Working/CYTOSPONGE_PROCEDURE_CRF_clean.dta"
 // Yes, they all received the Cytosponge
 // Some have AEs registered even if they failed to swallow
 sort PATIENT_ID
